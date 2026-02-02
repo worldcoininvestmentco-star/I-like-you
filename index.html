@@ -126,6 +126,7 @@ button:active {
   padding: 2.5rem 2rem;
   border-radius: 22px;
   text-align: center;
+  position: relative;
   animation: pop .4s ease;
   box-shadow: 0 30px 60px rgba(0,0,0,.25);
 }
@@ -165,6 +166,25 @@ button:active {
   font-size:.75rem;
   color:#999;
 }
+
+
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  color: #555;
+}
+
+.close-btn:hover {
+  color: #ff4d4d;
+  transform: scale(1.1);
+}
+
 
 @keyframes pulse {
   0%,100% { transform: scale(1); }
@@ -214,6 +234,9 @@ for (let i = 0; i < 20; i++) {
 <!-- Popup -->
 <div class="popup" id="popup">
   <div class="popup-card">
+    <button id="closePopup" class="close-btn">✖️</button>
+
+   
     <div class="emoji">❤️🔥❤️</div>
     <h2>Thanks for accepting 💖</h2>
     <p>You just made my heart happy 🥰</p>
@@ -376,6 +399,14 @@ document.getElementById("shareBtn").onclick=()=>{
     }
   });
 })();
+
+
+const closePopup = document.getElementById("closePopup");
+
+closePopup.addEventListener("click", () => {
+  popup.style.display = "none";     // close popup
+  card.style.display = "flex";      // show card again
+});
 
 
 
