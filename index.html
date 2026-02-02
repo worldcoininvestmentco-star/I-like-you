@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I Like You 💕</title>
+
+<style>
+:root {
+  --green:#2ecc71;
+  --red:#e74c3c;
+  --dark:#1f2937;
+  
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "Poppins", system-ui, -apple-system;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ffd6e8, #ffeaf4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Floating hearts */
+.heart {
+  position: absolute;
+  font-size: 20px;
+  animation: floatUp linear infinite;
+  pointer-events: none;
+}
+
+@keyframes floatUp {
+  from { transform: translateY(100vh) scale(.6); opacity: 0; }
+  to { transform: translateY(-10vh) scale(1.3); opacity: 1; }
+}
+
+/* Main card */
+.card {
+  background: #fff;
+  padding: 2.5rem 2rem;
+  border-radius: 22px;
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 25px 50px rgba(0,0,0,.2);
+  position: relative;
+  z-index: 5;
+}
+
+.card h1 {
+  font-size: 1.6rem;
+  color: var(--dark);
+  margin-bottom: 1rem;
+}
+
+.confession {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 1.6rem;
+  min-height: 40px;
+  transition: all .3s ease;
+}
+
+/* Buttons */
+button {
+  border: none;
+  padding: .85rem 2rem;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+button:active {
+  transform: scale(.95);
+}
+
+#yesBtn {
+  background: var(--green);
+  color: #fff;
+  box-shadow: 0 12px 25px rgba(46,204,113,.45);
+}
+
+#noBtn {
+  background: var(--red);
+  color: #fff;
+  box-shadow: 0 12px 25px rgba(231,76,60,.45);
+  position: fixed;
+  z-index: 100;
+}
+
+/* Shake animation */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-6px); }
+  100% { transform: translateX(0); }
+}
+
+/* Popup */
+.popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+.popup.active {
+  display: flex;
+}
+
+.popup-card {
+  background: #fff;
+  padding: 2.5rem 2rem;
+  border-radius: 22px;
+  text-align: center;
+  animation: pop .4s ease;
+  box-shadow: 0 30px 60px rgba(0,0,0,.25);
+}
+
+@keyframes pop {
+  from { transform: scale(.7); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.popup-card .emoji {
+  font-size: 2.2rem;
+  animation: pulse 1s infinite;
+}
+
+/* share buttons */
+.share-btn{
+  background:#111;
+  color:#fff;
+}
+
+.whatsapp {
+  margin-top: 20px;
+  background: #25d366;
+  color: #fff;
+  
+}
+
+.counter {
+  margin-top: 15px;
+  font-size: .85rem;
+  color: #666;
+}
+
+/* branding */
+.brand{
+  margin-top:3rem;
+  font-size:.75rem;
+  color:#999;
+}
+
+@keyframes pulse {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.25); }
+  
+}
+
+
+
+
+</style>
+</head>
+
+<body>
+
+<!-- Sounds -->
+<audio id="yesSound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3"></audio>
+<audio id="noSound" src="https://assets.mixkit.co/sfx/preview/mixkit-cartoon-fail-trumpet-831.mp3"></audio>
+
+<script>
+/* Floating hearts */
+for (let i = 0; i < 20; i++) {
+  const h = document.createElement("div");
+  h.className = "heart";
+  h.innerText = Math.random() > .5 ? "💕" : "❤️";
+  h.style.left = Math.random()*100 + "vw";
+  h.style.animationDuration = 5 + Math.random()*6 + "s";
+  h.style.fontSize = 18 + Math.random()*22 + "px";
+  document.body.appendChild(h);
+}
+</script>
+
+<div class="card">
+  <h1>I like you 💕<br>Do you like me?</h1>
+  <div class="confession" id="confession">
+    I’ve been wanting to tell you this 🥺
+  </div>
+  <button id="yesBtn">YES</button>
+  
+    <div class="brand">Made with 😈😍 by Tomi Lucky</div>
+    
+</div>
+
+  
+<button id="noBtn">NO</button>
+
+<!-- Popup -->
+<div class="popup" id="popup">
+  <div class="popup-card">
+    <div class="emoji">❤️🔥❤️</div>
+    <h2>Thanks for accepting 💖</h2>
+    <p>You just made my heart happy 🥰</p>
+    
+      <button class="share-btn" id="shareBtn">📤 Share</button>
+      <button class="whatsapp" id="waBtn">WhatsApp</button>
+    
+     <div class="counter">
+      YES clicks: <span id="yesCount">0</span>
+    </div>
+    
+      
+  </div>
+</div>
+
+<script>
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const popup = document.getElementById("popup");
+const confession = document.getElementById("confession");
+const yesSound = document.getElementById("yesSound");
+const noSound = document.getElementById("noSound");
+const waBtn = document.getElementById("waBtn");
+const yesCountEl = document.getElementById("yesCount");
+const noCountEl = document.getElementById("noCount");
+
+const messages = [
+  "Please don’t say no 😭",
+  "My heart is already yours 💔",
+  "I promise I’ll treat you right 🥺",
+  "Why are you running? 😈",
+  "Love is chasing you 💕",
+  "Okay… now you’re teasing me 😏"
+];
+
+/* Initial NO position */
+moveNo();
+
+/* HARD NO ESCAPE */
+function moveNo() {
+  const padding = 20;
+  const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - padding);
+  const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - padding);
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+}
+
+let tries = 0;
+let scale = 1, opacity = 1;
+let lastX = innerWidth / 2, lastY = innerHeight / 2;
+
+// helper to avoid card
+function insideCard(x, y) {
+  const r = card.getBoundingClientRect();
+  return x > r.left && x < r.right && y > r.top && y < r.bottom;
+}
+
+
+
+
+function evade() {
+  tries++;
+  noSound.currentTime = 0;
+  noSound.play();
+
+  confession.textContent = messages[Math.floor(Math.random() * messages.length)];
+
+  noBtn.style.animation = "shake .3s";
+  setTimeout(() => noBtn.style.animation = "", 300);
+  noBtn.style.transform = "rotate(" + (Math.random()*20 - 10) + "deg)";
+  
+  
+
+
+  moveNo();
+  
+
+  
+
+  
+  
+}
+
+noBtn.addEventListener("mouseover", evade);
+noBtn.addEventListener("touchstart", evade);
+
+/* YES */
+yesBtn.addEventListener("click", () => {
+  yesSound.play();
+  popup.classList.add("active");
+});
+
+/* Close popup */
+popup.addEventListener("click", () => {
+  popup.classList.remove("active");
+});
+
+/* WhatsApp share */
+waBtn.onclick = () => {
+  const text = encodeURIComponent("I just said YES ❤️🥰");
+  window.open(`https://wa.me/256789966218?text=${text}`, "_blank");
+};
+
+/* YES CLICK */
+yesBtn.onclick = () => {
+  yesSound.play();
+  popup.style.display = "flex";
+
+  let count = localStorage.getItem("yesCount") || 0;
+  count++;
+  localStorage.setItem("yesCount", count);
+  yesCountEl.textContent = count;
+};
+
+/* SHARE */
+document.getElementById("shareBtn").onclick=()=>{
+  const data={
+    title:"I Like You 💕",
+    text:"This question is harder than it looks 😈💖",
+    url:location.href
+  };
+  if(navigator.share){
+    navigator.share(data);
+  }else{
+    navigator.clipboard.writeText(location.href);
+    alert("Link copied! 📋");
+  }
+};
+
+
+
+
+
+
+(function () {
+  let yesClicked = false;
+
+  // Detect YES click
+  const yesBtn = document.getElementById("yesBtn");
+  yesBtn.addEventListener("click", () => {
+    yesClicked = true;
+  });
+
+  // Push initial state so back button triggers popstate
+  history.pushState(null, null, location.href);
+
+  window.addEventListener("popstate", function () {
+    if (!yesClicked) {
+      // Alert before YES
+      alert("😈 You can't go back now… decide first!");
+      history.pushState(null, null, location.href); // keep user on page
+    } else {
+      // Exit confirmation after YES
+      const leave = confirm("Do you want to exit? 💖");
+      if (leave) {
+        history.back(); // allow exit
+      } else {
+        history.pushState(null, null, location.href); // stay
+      }
+    }
+  });
+})();
+
+
+
+
+
+</script>
+
+</body>
+</html>
